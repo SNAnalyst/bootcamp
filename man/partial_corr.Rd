@@ -2,16 +2,9 @@
 % Please edit documentation in R/partial_corr.R
 \name{partial_corr}
 \alias{partial_corr}
-\alias{partial_corr_regression}
 \title{Partial correlation matrix}
 \usage{
 partial_corr(
-  x,
-  use = "everything",
-  method = c("pearson", "kendall", "spearman")
-)
-
-partial_corr_regression(
   x,
   use = "everything",
   method = c("pearson", "kendall", "spearman")
@@ -44,7 +37,7 @@ The approach is to find the complete partial correlation matrix
 This may be done by simply specifying the raw data or correlation matrix. 
 (In the case of raw data, correlations will be found according to \code{use} 
 and \code{method}.) In this case, just specify the data matrix.
-This is useful in the case of multiple regression.
+This is useful in the case of multiple regression. 
 
 \code{partial_corr()} computes the matrix from the inverse of the
 correlation matrix. The companion function
@@ -52,23 +45,8 @@ correlation matrix. The companion function
 residualizing each pair of variables against the remaining variables and then
 correlating the residuals. The regression-based variant is helpful when the
 inversion-based approach becomes numerically unstable.
-
-Missing values are handled on a complete-case basis for the regression-based
-approach. When \code{use} requests complete cases
-(\code{"complete.obs"}, \code{"na.or.complete"}, or
-\code{"pairwise.complete.obs"}), rows with any missing values are removed
-before the regressions are fit. For \code{"everything"} and
-\code{"all.obs"}, missing values trigger an error because regression cannot be
-fit with unresolved \code{NA} values.
-
-For \code{method = "spearman"}, the variables are rank-transformed before the
-regressions are fit. \code{method = "kendall"} is not supported in the
-regression implementation.
 }
 \examples{
 partial_corr(bootcamp::movie[, -3])
 partial_corr(bootcamp::centrality)
-
-partial_corr_regression(bootcamp::movie[, -3])
-partial_corr_regression(bootcamp::centrality, method = "spearman")
 }

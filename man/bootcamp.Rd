@@ -2,6 +2,7 @@
 % Please edit documentation in R/bootcamp-package.r
 \docType{package}
 \name{bootcamp}
+\alias{bootcamp-package}
 \alias{bootcamp}
 \title{bootcamp}
 \description{
@@ -9,5 +10,22 @@ Package supporting the bootcamp course
 }
 \details{
 Functions, datasets, and tutorials, useful for the bootcamp course.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/SNAnalyst/bootcamp}
+  \item Report bugs at \url{https://github.com/SNAnalyst/bootcamp/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Roger Leenders \email{SNA4DS@jads.nl}
+
+Authors:
+\itemize{
+  \item Claudia Zucca \email{SNA4DS@jads.nl}
+}
+
 }
 \keyword{package}
