@@ -27,6 +27,7 @@ Imports:
     learnr,
     remotes,
     rstudioapi,
+    shiny,
     stats
 Remotes:
 	github::rstudio-education/gradethis,
