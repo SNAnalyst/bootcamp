@@ -155,7 +155,7 @@ from the dataset should generally lead to a working result.
 # runs fine, because the factor is not included
 corrNetwork(bootcamp::movie[, -3])
 
-corrNetwork(bootcamp::movie[, -3], use_partial_cor = TRUE)
+corrNetwork(bootcamp::movie[, -3], use_partial_corr = TRUE)
 
 # only show correlation > .6 or < -.6
 corrNetwork(bootcamp::movie[, -3], remove_below_abs = .6)

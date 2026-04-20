@@ -104,7 +104,7 @@
 #' # runs fine, because the factor is not included
 #' corrNetwork(bootcamp::movie[, -3])
 #' 
-#' corrNetwork(bootcamp::movie[, -3], use_partial_cor = TRUE)
+#' corrNetwork(bootcamp::movie[, -3], use_partial_corr = TRUE)
 #' 
 #' # only show correlation > .6 or < -.6
 #' corrNetwork(bootcamp::movie[, -3], remove_below_abs = .6)
@@ -134,6 +134,9 @@ corrNetwork <- function(x, use = "everything",
   
   if (use_partial_corr) {
     res <- partial_corr(x, use = use, method = method)
+    if (is.null(res)) {
+      return(invisible(NULL))
+    }
   } else {  # regular correlations
     if (inherits(x, "data.frame") + inherits(x, "matrix") == 0) {
       stop("'x' should be a matrix or a data.frame")

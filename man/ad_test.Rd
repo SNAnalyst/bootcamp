@@ -26,7 +26,8 @@ Anderson-Darling test for Normality
 Performs the Anderson-Darling test for Normality. Missing values 
 are allowed.
 
-This specific function actually comes from \link[nortest]{ad.test}.
+This implementation is based on the Anderson-Darling normality test as
+provided by the \code{nortest} package.
 }
 \examples{
 data(BrendonSmall, package = "bootcamp")
@@ -36,5 +37,6 @@ ad_test(model.1$residuals)
 ad_test(model.2$residuals)
 }
 \references{
-authored by Juergen Gross in \link[nortest]{ad.test}
+Juergen Gross, author of the \code{ad.test()} implementation in
+the \code{nortest} package.
 }

@@ -21,7 +21,7 @@ Useful inside a learnr tutorial.
 \code{reqs} is a data.frame with column names "pkg", "version", "where".
 All items are \code{character}!
 
-\itemize{
+\describe{
 \item{pkg}{names of the packages}
 \item{version}{the minimally required version}
 \item{where}{location of the package for download}

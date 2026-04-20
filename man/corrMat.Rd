@@ -10,6 +10,7 @@ corrMat(
   method = c("pearson", "kendall", "spearman"),
   show_values = TRUE,
   digits = 2,
+  cex.cell = 0.8,
   cols = (grDevices::colorRampPalette(c(DescTools::Pal()[2], "white",
     DescTools::Pal()[1]), space = "rgb"))(20),
   breaks = seq(-1, 1, length = length(cols) + 1),
@@ -23,7 +24,7 @@ corrMat(
   mar = c(3, 8, 8, 8),
   mincor = 0,
   main = "",
-  clust = TRUE,
+  clust = FALSE,
   stamp = NULL,
   ...
 )
@@ -43,6 +44,9 @@ one of the strings \code{"everything"}, \code{"all.obs"}, \code{"complete.obs"},
 \item{show_values}{logical, should the correlation values be printed in the matrix}
 
 \item{digits}{the number of decimals to show if \code{show_values} is \code{TRUE}}
+
+\item{cex.cell}{the character expansion used for the correlation values shown
+inside the matrix cells when \code{show_values = TRUE}.}
 
 \item{cols}{the colors for shading the matrix. Uses the package's option
 \code{"col1"} and \code{"col2"} as default.}
@@ -81,7 +85,8 @@ with a lower value are suppressed.}
 \item{main}{character, the main title.}
 
 \item{clust}{logical. If set to \code{TRUE}, the correlations will be
-clustered in order to aggregate similar values.}
+clustered in order to aggregate similar values. The default is
+\code{FALSE}, which preserves the order of the columns in \code{x}.}
 
 \item{stamp}{text or expression to be placed in the right bottom corner of the plot. 
 This can be useful, if some author or date information should automatically 

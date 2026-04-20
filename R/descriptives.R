@@ -33,9 +33,13 @@
 #' }
 #' 
 #' @param x A data frame, vector, or matrix
-#' @param na.rm logical, \code{na.rm = FALSE} will delete the case in the 
-#' computation of statistics such as \code{mean}, \code{sd}, et cetera
-#' @param normal logical, if \code{TRUE} skewness and kurtosis are computed and the Shapiro-Wilk test of normality.
+#' @param na.rm logical, should missing values be removed when computing
+#' statistics such as \code{mean}, \code{sd}, quantiles, and related summary
+#' measures?
+#' @param normal logical, if \code{TRUE}, skewness and kurtosis are computed and
+#' a Shapiro-Wilk normality test is attempted for each variable. If the Shapiro
+#' test is not defined for a variable, \code{NA} values are returned for the
+#' corresponding normality output columns.
 #' @param ranges logical, if \code{TRUE} (the default) min, max, range, 
 #' mad, median are computed
 #' @param trim numeric between 0 and 1 (default trim = .1) –- drops the top and 
@@ -44,16 +48,15 @@
 #' If default \code{NULL}, will switch to fast mode for large 
 #' (ncol * nrow > 10^7) 
 #' problems, otherwise defaults to \code{fast = FALSE}
-#' @param quantiles if not \code{NULL}, will find the specified quantiles 
-#' (e.g. \code{quant = c(.25, .75)} will find the 25th and 75th percentiles)
+#' @param quantiles if not \code{NULL}, will find the specified quantiles
+#' (e.g. \code{quantiles = c(.25, .75)} will find the 25th and 75th percentiles)
 #' @param IQR logical, if \code{TRUE} (default is \code{FALSE}) the interquartile 
 #' range is computed
-#' Defaults to \code{TRUE} because most desciptives in this function are not 
-#' meaningful for factors or characters.
 #' @param complete_cases logical, should only complete cases be used? 
 #' If \code{TRUE}, all rows in \code{x} that have a \code{NA} in them will be 
-#' completely dropped. Only useful if this is the intended behavior in the 
-#' analysis that will be run with the data. Default is \code{FALSE}.
+#' completely dropped before any statistics are computed. This means that
+#' \code{n_valid} and \code{n_na} in the result reflect the data actually used
+#' in the analysis. Default is \code{FALSE}.
 #' @param digits numeric, the number of decimals to print
 #' @param print logical, should the descriptives be printed to the console? 
 #' Defaults to \code{TRUE}.
@@ -89,20 +92,20 @@ descriptives <-function (x,
   if (inherits(x, "tbl")) {
     class(x) <- "data.frame"
   }
-  
-  valid <- function(x) {sum(!is.na(x))}
-  isna <- function(x) {sum(is.na(x))}
-  stats <- as.data.frame(matrix(nrow = ncol(x)))
-  colnames(stats) <- "weggooien"
-  rownames(stats) <- colnames(x)
-  stats$n_valid <- suppressWarnings(apply(x, 2, valid))
-  stats$n_na <- suppressWarnings(apply(x, 2, isna))
-  
+
   column <- 1:ncol(x)
   if (complete_cases) {
     x <- stats::na.omit(x)
     message("Incomplete cases removed")
   }   #just complete cases
+
+  valid <- function(x) {sum(!is.na(x))}
+  isna <- function(x) {sum(is.na(x))}
+  summary_df <- as.data.frame(matrix(nrow = ncol(x)))
+  colnames(summary_df) <- "weggooien"
+  rownames(summary_df) <- colnames(x)
+  summary_df$n_valid <- suppressWarnings(apply(x, 2, valid))
+  summary_df$n_na <- suppressWarnings(apply(x, 2, isna))
   
   # fast
   if (is.null(fast)) {
@@ -129,8 +132,8 @@ descriptives <-function (x,
       char_names <- colnames(x)[chars]  # these are the string vars
       x <-  x[, -chars]
       column <- column[-chars]
-      weg_in_stats <- which(rownames(stats) %in% char_names)
-      stats <- stats[-weg_in_stats, ]
+      weg_in_stats <- which(rownames(summary_df) %in% char_names)
+      summary_df <- summary_df[-weg_in_stats, ]
       message("'x' contains character vectors (", paste(char_names, collapse = " "), ")--they have been removed")
     } else {
       x[, chars] <- suppressWarnings(as.numeric(x[, chars]))
@@ -145,8 +148,8 @@ descriptives <-function (x,
       fact_names <- colnames(x)[facts]  # these are the string vars
       x <-  x[, -facts]
       column <- column[-facts]
-      weg_in_stats <- which(rownames(stats) %in% fact_names)
-      stats <- stats[-weg_in_stats, ]
+      weg_in_stats <- which(rownames(summary_df) %in% fact_names)
+      summary_df <- summary_df[-weg_in_stats, ]
       message("'x' contains factors (", paste(fact_names, collapse = " "), ")--they have been removed")
     } else {
       x[, facts] <- suppressWarnings(as.numeric(x[, facts]))
@@ -161,47 +164,68 @@ descriptives <-function (x,
     return(invisible())
   }
   
-  stats$column <- column
-  stats$mean <- suppressWarnings(apply(x, 2, mean, na.rm = na.rm))
-  stats$trimmed_mean <- suppressWarnings(apply(x, 2, mean, 
-                                               na.rm = na.rm, trim = trim))
-  stats$sd <- suppressWarnings(apply(x, 2, stats::sd, na.rm = na.rm))
-  stats$se <- suppressWarnings(stats$sd/sqrt(stats$n_valid))
-  stats$coefvar <- suppressWarnings(stats$sd/stats$mean)
+  summary_df$column <- column
+  summary_df$mean <- suppressWarnings(apply(x, 2, mean, na.rm = na.rm))
+  summary_df$trimmed_mean <- suppressWarnings(apply(x, 2, mean, 
+                                                    na.rm = na.rm, trim = trim))
+  summary_df$sd <- suppressWarnings(apply(x, 2, stats::sd, na.rm = na.rm))
+  summary_df$se <- suppressWarnings(summary_df$sd/sqrt(summary_df$n_valid))
+  summary_df$coefvar <- suppressWarnings(summary_df$sd/summary_df$mean)
   
   if (normal) {
-    stats$skewness <- suppressWarnings(apply(x, 2, skewness, na.rm = na.rm))
-    stats$kurtosis <- suppressWarnings(apply(x, 2, kurtosis, na.rm = na.rm))
-    shap <- apply(x, 2, stats::shapiro.test)
-    stats$normal.w <- lapply(shap, "[[", "statistic") |> unlist()
-    stats$normal.p <- lapply(shap, "[[", "p.value") |> unlist()
+    safe_shapiro <- function(values) {
+      values <- values[!is.na(values)]
+
+      # Shapiro-Wilk is only defined for 3..5000 non-constant observations.
+      if (length(values) < 3L || length(values) > 5000L || isTRUE(all.equal(stats::sd(values), 0))) {
+        return(c(statistic = NA_real_, p.value = NA_real_))
+      }
+
+      shapiro_result <- stats::shapiro.test(values)
+      c(statistic = unname(shapiro_result$statistic), p.value = shapiro_result$p.value)
+    }
+
+    summary_df$skewness <- suppressWarnings(apply(x, 2, skewness, na.rm = na.rm))
+    summary_df$kurtosis <- suppressWarnings(apply(x, 2, kurtosis, na.rm = na.rm))
+    shap <- t(vapply(seq_len(ncol(x)), function(i) safe_shapiro(x[, i]), FUN.VALUE = c(statistic = 0, p.value = 0)))
+    summary_df$normal.w <- shap[, "statistic"]
+    summary_df$normal.p <- shap[, "p.value"]
   }
   
   if (ranges) {
-    stats$min <- suppressWarnings(apply(x, 2, min, na.rm = na.rm))
-    stats$max <- suppressWarnings(apply(x, 2, max, na.rm = na.rm))
-    stats$range <- suppressWarnings(stats$max - stats$min)
+    summary_df$min <- suppressWarnings(apply(x, 2, min, na.rm = na.rm))
+    summary_df$max <- suppressWarnings(apply(x, 2, max, na.rm = na.rm))
+    summary_df$range <- suppressWarnings(summary_df$max - summary_df$min)
     if (!fast) {
-      stats$mad <- suppressWarnings(apply(x, 2, stats::mad, na.rm = na.rm))
-      stats$median <- suppressWarnings(apply(x, 2, stats::median, na.rm = na.rm))
+      summary_df$mad <- suppressWarnings(apply(x, 2, stats::mad, na.rm = na.rm))
+      summary_df$median <- suppressWarnings(apply(x, 2, stats::median, na.rm = na.rm))
     }
   }
 
   if (!is.null(quantiles)) {
-    Qnt <- apply(x, 2, stats::quantile, prob = quantiles, na.rm = TRUE)
-    if (is.null(dim(Qnt))) {
-      Qnt <- as.matrix(Qnt)
-      colnames(Qnt) <- paste0("Q", as.list(as.list(match.call())$quantile)[[2]])
-      stats <- cbind(stats, Qnt)
-    } else { # bij meerdere stats is het al een matrix met rijnamen
-      Qnt <- t(Qnt)
-      stats <- cbind(stats, Qnt)
+    quantile_names <- paste0("Q", format(quantiles, trim = TRUE, scientific = FALSE))
+    quantile_values <- vapply(
+      seq_len(ncol(x)),
+      function(i) stats::quantile(x[, i], probs = quantiles, na.rm = na.rm, names = FALSE),
+      FUN.VALUE = stats::setNames(numeric(length(quantiles)), quantile_names)
+    )
+    if (is.null(dim(quantile_values))) {
+      quantile_values <- matrix(quantile_values, ncol = 1)
+      colnames(quantile_values) <- quantile_names
+      rownames(quantile_values) <- colnames(x)
+    } else {
+      quantile_values <- t(quantile_values)
     }
+    summary_df <- cbind(summary_df, quantile_values)
   }
   
   if (IQR) {
-    Quart <- t(apply(x, 2, stats::quantile, prob = c(.25, .75), na.rm = TRUE))
-    stats$IQR <- Quart[, 2] - Quart[, 1]
+    Quart <- t(vapply(
+      seq_len(ncol(x)),
+      function(i) stats::quantile(x[, i], probs = c(.25, .75), na.rm = na.rm, names = FALSE),
+      FUN.VALUE = c(q25 = 0, q75 = 0)
+    ))
+    summary_df$IQR <- Quart[, 2] - Quart[, 1]
   }
 
   all_stats_possible <- c(
@@ -211,26 +235,26 @@ descriptives <-function (x,
   if (ranges) {all_stats_possible <- c(all_stats_possible, "min", "max")}
   if (ranges + !fast == 2) {all_stats_possible <- 
     c(all_stats_possible, "median", "range", "mad")}
-  if (!is.null(quantiles)) {all_stats_possible <- c(all_stats_possible, colnames(Qnt))}
+  if (!is.null(quantiles)) {all_stats_possible <- c(all_stats_possible, quantile_names)}
   if (IQR) {all_stats_possible <- c(all_stats_possible, "IQR")}
   
-  stats$weggooien <- NULL
-  present <- which(all_stats_possible %in% colnames(stats))
+  summary_df$weggooien <- NULL
+  present <- which(all_stats_possible %in% colnames(summary_df))
   # gewenste volgorde
-  stats <- stats[, all_stats_possible[present]]
+  summary_df <- summary_df[, all_stats_possible[present]]
   
   if(print) {
-    if (length(dim(stats)) == 1) {
-      class(stats) <- "list"
-      attr(stats, "call") <- NULL
-      print(round(stats, digits = digits))
+    if (length(dim(summary_df)) == 1) {
+      class(summary_df) <- "list"
+      attr(summary_df, "call") <- NULL
+      print(round(summary_df, digits = digits))
     } else  {
-      class(stats) <- "data.frame"
-      print(round(stats, digits = digits))
+      class(summary_df) <- "data.frame"
+      print(round(summary_df, digits = digits))
     }
   }
   
-  invisible(stats)
+  invisible(summary_df)
 }
   
   

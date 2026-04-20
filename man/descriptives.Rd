@@ -21,10 +21,14 @@ descriptives(
 \arguments{
 \item{x}{A data frame, vector, or matrix}
 
-\item{na.rm}{logical, \code{na.rm = FALSE} will delete the case in the 
-computation of statistics such as \code{mean}, \code{sd}, et cetera}
+\item{na.rm}{logical, should missing values be removed when computing
+statistics such as \code{mean}, \code{sd}, quantiles, and related summary
+measures?}
 
-\item{normal}{logical, if \code{TRUE} skewness and kurtosis are computed and the Shapiro-Wilk test of normality.}
+\item{normal}{logical, if \code{TRUE}, skewness and kurtosis are computed and
+a Shapiro-Wilk normality test is attempted for each variable. If the Shapiro
+test is not defined for a variable, \code{NA} values are returned for the
+corresponding normality output columns.}
 
 \item{ranges}{logical, if \code{TRUE} (the default) min, max, range, 
 mad, median are computed}
@@ -37,18 +41,17 @@ If default \code{NULL}, will switch to fast mode for large
 (ncol * nrow > 10^7) 
 problems, otherwise defaults to \code{fast = FALSE}}
 
-\item{quantiles}{if not \code{NULL}, will find the specified quantiles 
-(e.g. \code{quant = c(.25, .75)} will find the 25th and 75th percentiles)}
+\item{quantiles}{if not \code{NULL}, will find the specified quantiles
+(e.g. \code{quantiles = c(.25, .75)} will find the 25th and 75th percentiles)}
 
 \item{IQR}{logical, if \code{TRUE} (default is \code{FALSE}) the interquartile 
-range is computed
-Defaults to \code{TRUE} because most desciptives in this function are not 
-meaningful for factors or characters.}
+range is computed}
 
 \item{complete_cases}{logical, should only complete cases be used? 
 If \code{TRUE}, all rows in \code{x} that have a \code{NA} in them will be 
-completely dropped. Only useful if this is the intended behavior in the 
-analysis that will be run with the data. Default is \code{FALSE}.}
+completely dropped before any statistics are computed. This means that
+\code{n_valid} and \code{n_na} in the result reflect the data actually used
+in the analysis. Default is \code{FALSE}.}
 
 \item{digits}{numeric, the number of decimals to print}
 

@@ -40,7 +40,7 @@ Heeft geen effect op de grootte van de asterisks. Indien \code{NULL} (de default
 \value{
 Scatterplot matrix with histograms on the diagonal, 
 scatterplots with smoothers below the diagonal and
-pairwise correlations (with signif. stars) above the diagonal
+pairwise signed correlations (with signif. stars) above the diagonal
 }
 \description{
 Makes a pimped scatterplot matrix

@@ -14,12 +14,15 @@ Check the installed bootcamp version
 }
 \details{
 With this function you can check if you have the most recent version of
-the bootcamp package installed.
+the bootcamp package installed on GitHub.
 
 If you are current, the function returns a message that tells you so.
 If there is a more recent version on Github, the function will inform you
 that an update is available. It will also offer you the option to update
 the package by simply pressing the "1" or "Y" key.
+
+The function checks the repository configured for this package:
+\code{SNAnalyst/bootcamp} on the \code{main} branch.
 }
 \examples{
 \dontrun{

@@ -1,0 +1,7 @@
+^\\.git$
+^\\.gitignore$
+^\\.Rhistory$
+^R/\\.Rhistory$
+^data/\\.Rhistory$
+^inst/tutorials/.*/\\.Rhistory$
+^\\.\\.?Rcheck$

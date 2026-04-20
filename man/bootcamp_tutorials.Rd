@@ -11,16 +11,17 @@ bootcamp_tutorials(graphics = TRUE)
 graphical menu?}
 }
 \value{
-nothing
+Invisibly returns the selected tutorial name. If the user cancels the
+selection, \code{NULL} is returned invisibly.
 }
 \description{
 Pick a tutorial from the bootcamp package
 }
 \details{
-Shows a list of currently available tutorials in the #' \code{bootcamp} package.
-The user can pick the preferred tutorial by entering the number that corresponds
-to the preferred tutorial. The tutorial will then open in the user's default
-web browser.
+Shows a list of currently available tutorials in the
+\code{bootcamp} package. The user can pick the preferred tutorial by
+entering the number that corresponds to the preferred tutorial. The
+selected tutorial is then started with \code{learnr::run_tutorial()}.
 
 When \code{graphics} is \code{TRUE}, a graphical choice menu is shown. If that
 is not preferred, or if the user's machine lacks the graphical tools needed,

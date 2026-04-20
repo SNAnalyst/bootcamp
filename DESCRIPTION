@@ -2,6 +2,7 @@ Package: bootcamp
 Type: Package
 Title: Statistics Bootcamp
 Version: 0.02
+Author: Roger Leenders [aut, cre], Claudia Zucca [aut]
 Authors@R:
 	c(person(given = "Roger",
 					family = "Leenders",
@@ -16,29 +17,30 @@ Description: Contains the tutorials for the JADS course "Stats Bootcamp" .
 Depends: R (>= 4.1.0)
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/SNAnalyst/bootcamp2022
-BugReports: https://github.com/SNAnalyst/bootcamp2022/issues
+URL: https://github.com/SNAnalyst/bootcamp
+BugReports: https://github.com/SNAnalyst/bootcamp/issues
 RoxygenNote: 7.2.3
 Imports:
     DescTools,
     glue,
     graphics,
-    gradethis,
-    jtools,
-    knitr,
     learnr,
-    outliertree,
     remotes,
-    rmarkdown,
     rstudioapi,
-    stats,
-    texreg
+    stats
 Remotes:
 	github::rstudio-education/gradethis,
 Suggests:
+	gradethis,
+	jtools,
+	knitr,
+	outliertree,
+	rmarkdown,
+	texreg,
 	desc,
 	fs,
 	rlang,
 	rprojroot,
+	tinytest,
 	usethis
 License: AGPL (>= 3) + file LICENSE

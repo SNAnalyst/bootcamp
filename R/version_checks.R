@@ -9,7 +9,7 @@
 #' \code{reqs} is a data.frame with column names "pkg", "version", "where".
 #' All items are \code{character}!
 #'
-#' \itemize{
+#' \describe{
 #' \item{pkg}{names of the packages}
 #' \item{version}{the minimally required version}
 #' \item{where}{location of the package for download}
@@ -74,8 +74,7 @@ check_packages <- function (reqs) {
       }
     }
     else {
-      if (all_installed[installed, "Version"] < reqs[pak,
-                                                     "version"]) {
+      if (utils::compareVersion(all_installed[installed, "Version"], reqs[pak, "version"]) < 0) {
         if (reqs[pak, "where"] == "CRAN") {
           try(utils::install.packages(reqs[pak, "pkg"],
                                       dependencies = TRUE),
@@ -107,8 +106,7 @@ check_packages <- function (reqs) {
         pkg_missing <- c(pkg_missing, pak)
       }
       else {
-        if (all_installed[installed, "Version"] < reqs[pak,
-                                                       "version"]) {
+        if (utils::compareVersion(all_installed[installed, "Version"], reqs[pak, "version"]) < 0) {
           pkg_low <- c(pkg_low, pak)
         }
       }
@@ -246,7 +244,7 @@ check_r_equal <- function(version = "4.3.1", verdict = TRUE) {
 #' @export
 check_rstudio_equal_or_larger <- function(version = "2023.6.1.524", verdict = TRUE) {
   ver <- rstudioapi::versionInfo()$version
-  if (ver >= version) {
+  if (utils::compareVersion(as.character(ver), version) >= 0) {
     if (verdict) cat("Your version of RStudio is fine")
     invisible(TRUE)
   } else {
@@ -262,7 +260,7 @@ check_r_equal_or_larger <- function(version = "4.3.1", verdict = TRUE) {
   major_r <- R.Version()$major
   minor_r <- R.Version()$minor
   ver <- paste0(major_r, ".", minor_r)
-  if (ver >= version) {
+  if (utils::compareVersion(ver, version) >= 0) {
     if (verdict) cat("Your version of R is fine")
     invisible(TRUE)
   } else {

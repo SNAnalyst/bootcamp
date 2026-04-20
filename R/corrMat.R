@@ -31,6 +31,8 @@
 #' \code{"kendall"}, or \code{"spearman"}: can be abbreviated
 #' @param show_values logical, should the correlation values be printed in the matrix
 #' @param digits the number of decimals to show if \code{show_values} is \code{TRUE}
+#' @param cex.cell the character expansion used for the correlation values shown
+#' inside the matrix cells when \code{show_values = TRUE}.
 #' @param cols the colors for shading the matrix. Uses the package's option
 #' \code{"col1"} and \code{"col2"} as default.
 #' @param breaks a set of breakpoints for the colours: must give one more
@@ -56,7 +58,8 @@
 #' with a lower value are suppressed.
 #' @param main character, the main title.
 #' @param clust logical. If set to \code{TRUE}, the correlations will be
-#' clustered in order to aggregate similar values.
+#' clustered in order to aggregate similar values. The default is
+#' \code{FALSE}, which preserves the order of the columns in \code{x}.
 #' @param stamp text or expression to be placed in the right bottom corner of the plot. 
 #' This can be useful, if some author or date information should automatically 
 #' be inserted by default. Any text can be set as option, but also dynamic 
@@ -91,6 +94,7 @@ corrMat <- function(x,
         method = c("pearson", "kendall", "spearman"),
         show_values = TRUE,
         digits = 2,
+        cex.cell = 0.8,
         cols = grDevices::colorRampPalette(c(DescTools::Pal()[2], "white", 
                                              DescTools::Pal()[1]), space = "rgb")(20),
         breaks = seq(-1, 1, length = length(cols) + 1),
@@ -104,7 +108,7 @@ corrMat <- function(x,
         mar = c(3, 8, 8, 8),
         mincor = 0,
         main = "",
-        clust = TRUE,
+        clust = FALSE,
         stamp = NULL,
         ...) {
   
@@ -146,15 +150,27 @@ corrMat <- function(x,
                       ...)
   
   if (show_values) {
-    idx <- stats::order.dendrogram(stats::as.dendrogram(
-      stats::hclust(stats::dist(res), method = "mcquitty")
-    ))
+    idx <- get_corrmat_display_order(res, clust = clust)
     x <- matrix(rep(1:ncol(res), each = ncol(res), ncol = ncol(res)))
     y <- matrix(rep(ncol(res):1, ncol(res)), ncol = ncol(res))
     txt <- DescTools::Format(res[idx, idx], d = digits, na.form = "n.s.", ...)
     idx <- upper.tri(matrix(x, ncol = ncol(res)), diag = FALSE)
-    graphics::text(x = x[idx], y = y[idx], label = txt[idx], cex = .8, xpd = TRUE)
+    graphics::text(x = x[idx], y = y[idx], label = txt[idx], cex = cex.cell, xpd = TRUE)
   }
   return(invisible(res))
+}
+
+
+
+
+#' @keywords internal
+get_corrmat_display_order <- function(correlation_matrix, clust) {
+  if (!isTRUE(clust)) {
+    return(seq_len(ncol(correlation_matrix)))
+  }
+
+  stats::order.dendrogram(stats::as.dendrogram(
+    stats::hclust(stats::dist(correlation_matrix), method = "mcquitty")
+  ))
 }
 

@@ -23,7 +23,7 @@
 #' Heeft geen effect op de grootte van de asterisks. Indien \code{NULL} (de default) kan het verschil in grootte erg groot worden.
 #' @return Scatterplot matrix with histograms on the diagonal, 
 #' scatterplots with smoothers below the diagonal and
-#' pairwise correlations (with signif. stars) above the diagonal
+#' pairwise signed correlations (with signif. stars) above the diagonal
 #'
 #' @export betterpairs
 #' @examples
@@ -46,9 +46,9 @@ betterpairs <- function(x, histogram = FALSE, density = TRUE, rug = TRUE, smooth
     usr <- graphics::par("usr")
     on.exit(graphics::par(usr))
     graphics::par(usr = c(0, 1, 0, 1))
-    r <- abs(stats::cor(x, y, use = use))
-    txt <- format(c(r, 0.123456789), digits = digits)[1]
-    txt <- paste(prefix, txt, sep = "")
+    correlation_info <- format_betterpairs_correlation(x = x, y = y, digits = digits, use = use)
+    r <- correlation_info$correlation
+    txt <- paste(prefix, correlation_info$label, sep = "")
     if (is.null(cex.cor)) 
       cex <- 0.8/graphics::strwidth(txt)
     if (!is.null(cex.cor)) 
@@ -57,7 +57,8 @@ betterpairs <- function(x, histogram = FALSE, density = TRUE, rug = TRUE, smooth
     Signif <- stats::symnum(test$p.value, corr = FALSE, na = FALSE, 
                      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", 
                                                                               "**", "*", ".", " "))
-    graphics::text(0.5, 0.5, txt, cex = cex * sqrt(r)/2)  # aangepast om de verschillen wat kleiner te maken
+    # Text size follows the magnitude, but the displayed label keeps the sign.
+    graphics::text(0.5, 0.5, txt, cex = cex * sqrt(abs(r))/2)
     #     graphics::text(0.5, 0.5, txt, cex = cex * r)  ## oorspronkelijke schaling van de textgrootte van de correlaties
     #     graphics::text(0.8, 0.8, Signif, cex = cex, col = 2) # oospronkelijke grootte van de sterretjes
     graphics::text(0.8, 0.8, Signif, cex = 0.8/graphics::strwidth(txt), col = 2) #aangepast, zodat ze niet mee veranderen met de hoogte van de correlatie
@@ -151,4 +152,18 @@ betterpairs <- function(x, histogram = FALSE, density = TRUE, rug = TRUE, smooth
                ...)
   }
   invisible()
+}
+
+
+
+
+#' @keywords internal
+format_betterpairs_correlation <- function(x, y, digits = 2, use = "pairwise.complete.obs") {
+  correlation <- stats::cor(x, y, use = use)
+  label <- format(c(correlation, 0.123456789), digits = digits)[1]
+
+  list(
+    correlation = correlation,
+    label = label
+  )
 }

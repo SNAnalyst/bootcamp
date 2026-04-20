@@ -10,7 +10,7 @@ A data frame with 284 observations on the following 7 variables.
   \item{TermGPA}{GPA for the Spring term}
   \item{TotalSleepTime}{Total sleep per day (in minutes)}
   \item{CumGPA}{prior cumulative GPA}
-  \item{DayTimeSleep}{Total sleep per day (in minutes)}
+  \item{DaytimeSleep}{Total sleep per day (in minutes)}
   \item{Gender}{Gender, dichotomous (exact coding not reported in the study)}
   \item{Race}{binary label for underrepresented (0) and non-underrepresented 
   (1) students. 

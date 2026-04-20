@@ -26,10 +26,7 @@
 #'           have the same data, without transformations, use the same 
 #'           dependent variable, and be fit with the same method.
 #'           They do not need to be nested.
-#'           
-#'           The function will fail if a model formula is
-#'           longer than 500 characters.
-#'           
+#'
 #' @author Salvatore Mangiafico, \email{mangiafico@njaes.rutgers.edu}
 #' @references \url{http://rcompanion.org/handbook/I_10.html}
 #'             \url{http://rcompanion.org/rcompanion/e_05.html}
@@ -48,56 +45,56 @@
 #' 
 #' @export
 compareLM <- function (fits, ...) {
- fits = list(fits, ...)
- n = length(fits)
- Y = matrix(rep("A",n),
-            ncol=1)
- colnames(Y) = "Formula"
- rownames(Y) = seq(1,n)
+ fits <- list(fits, ...)
+ n <- length(fits)
+ Y <- matrix(rep("A", n),
+             ncol = 1)
+ colnames(Y) <- "Formula"
+ rownames(Y) <- seq_len(n)
 
-  for(i in 1:n)
-    {
-     Y[i,]= deparse(stats::formula(fits[[i]]), width.cutoff = 500L)
-     }
+  for (i in seq_len(n)) {
+    # `deparse()` can return multiple strings for long formulas; collapsing them
+    # keeps the full model formula intact instead of failing on long calls.
+    Y[i, ] <- paste(deparse(stats::formula(fits[[i]]), width.cutoff = 500L), collapse = "")
+  }
    
- Z = data.frame(Rank=rep(NA,n),
-                Df.res=rep(NA,n),
-                AIC=rep(NA,n),
-                AICc = rep(NA,n),
-                BIC=rep(NA,n),
-                R.squared=rep(NA,n),
-                Adj.R.sq=rep(NA,n),
-                f.p.value=rep(NA,n),
-                Anderson.p=rep(NA,n),
-                stringsAsFactors=FALSE)   
-   for(i in 1:n)
-    {
-     k = length(fits[[i]]$coefficients)+1
-     L = as.numeric(stats::logLik(fits[[i]]))
-     N = stats::nobs(fits[[i]])
-     aic  = -2*L+2*k
-     aicc = aic+2*(k*(k+1))/(N-k-1)
-     bic  = -2*L+log(N)*k
+ Z <- data.frame(Rank = rep(NA, n),
+                 Df.res = rep(NA, n),
+                 AIC = rep(NA, n),
+                 AICc = rep(NA, n),
+                 BIC = rep(NA, n),
+                 R.squared = rep(NA, n),
+                 Adj.R.sq = rep(NA, n),
+                 f.p.value = rep(NA, n),
+                 Anderson.p = rep(NA, n),
+                 stringsAsFactors = FALSE)   
+   for (i in seq_len(n)) {
+     k <- length(fits[[i]]$coefficients) + 1
+     L <- as.numeric(stats::logLik(fits[[i]]))
+     N <- stats::nobs(fits[[i]])
+     aic <- -2 * L + 2 * k
+     aicc <- aic + 2 * (k * (k + 1)) / (N - k - 1)
+     bic <- -2 * L + log(N) * k
     
-     Z[i,]=c(signif(fits[[i]]$rank, digits=4),
-             signif(fits[[i]]$df.residual, digits=4),
-             signif(aic, digits=4),
-             signif(aicc, digits=4),
-             signif(bic, digits=4),
-             signif(summary(fits[[i]])$r.squared, digits=4),
-             signif(summary(fits[[i]])$adj.r.squared, digits=4),
-             signif(stats::pf(summary(fits[[i]])$fstatistic[1], 
-                summary(fits[[i]])$fstatistic[2], 
-                summary(fits[[i]])$fstatistic[3],
-                lower.tail = FALSE), digits=4),
-             signif(bootcamp::ad_test(fits[[i]]$residuals)$p.value,
-                    digits=4)
-             )
+     Z[i, ] <- c(signif(fits[[i]]$rank, digits = 4),
+                 signif(fits[[i]]$df.residual, digits = 4),
+                 signif(aic, digits = 4),
+                 signif(aicc, digits = 4),
+                 signif(bic, digits = 4),
+                 signif(summary(fits[[i]])$r.squared, digits = 4),
+                 signif(summary(fits[[i]])$adj.r.squared, digits = 4),
+                 signif(stats::pf(summary(fits[[i]])$fstatistic[1], 
+                                  summary(fits[[i]])$fstatistic[2], 
+                                  summary(fits[[i]])$fstatistic[3],
+                                  lower.tail = FALSE), digits = 4),
+                 signif(bootcamp::ad_test(fits[[i]]$residuals)$p.value,
+                        digits = 4)
+                 )
      }     
    
- W = list(Y, Z)
- names(W) = c("Models",
-              "Fit.criteria")
+ W <- list(Y, Z)
+ names(W) <- c("Models",
+               "Fit.criteria")
  return(W)            
 } 
 
@@ -111,7 +108,8 @@ compareLM <- function (fits, ...) {
 #' Performs the Anderson-Darling test for Normality. Missing values 
 #' are allowed.
 #' 
-#' This specific function actually comes from \link[nortest]{ad.test}.
+#' This implementation is based on the Anderson-Darling normality test as
+#' provided by the \code{nortest} package.
 #'
 #' @param x a numeric vector of data values, the number of which must be 
 #' greater than 7. Missing values are allowed.
@@ -125,7 +123,8 @@ compareLM <- function (fits, ...) {
 #'   \item{data.name}{a character string giving the name(s) of the data}
 #' }
 #' @export
-#' @references authored by Juergen Gross in \link[nortest]{ad.test}
+#' @references Juergen Gross, author of the \code{ad.test()} implementation in
+#' the \code{nortest} package.
 #' @examples 
 #' data(BrendonSmall, package = "bootcamp")
 #' model.1 = lm(Sodium ~ Calories, data = BrendonSmall)
