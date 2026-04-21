@@ -31,15 +31,12 @@
 #' bootcamp::demo_confidence()
 #' }
 demo_confidence <- function(launch.browser = TRUE) {
-  if (!base::is.logical(launch.browser) || length(launch.browser) != 1L || is.na(launch.browser)) {
-    stop("'launch.browser' should be TRUE or FALSE")
-  }
   if (!base::requireNamespace("shiny", quietly = TRUE)) {
     stop("Package 'shiny' is required. Install it with utils::install.packages('shiny').")
   }
 
-  shiny::runApp(
-    appObj = build_demo_confidence_app(),
+  run_bootcamp_shiny_demo(
+    app_builder = build_demo_confidence_app,
     launch.browser = launch.browser
   )
 }

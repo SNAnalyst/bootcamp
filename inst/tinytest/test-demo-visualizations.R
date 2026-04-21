@@ -6,6 +6,7 @@ delete_demo_OLS_point <- getFromNamespace("delete_demo_OLS_point", "bootcamp")
 add_demo_OLS_influential_point <- getFromNamespace("add_demo_OLS_influential_point", "bootcamp")
 summarize_demo_OLS_fit <- getFromNamespace("summarize_demo_OLS_fit", "bootcamp")
 build_demo_OLS_app <- getFromNamespace("build_demo_OLS_app", "bootcamp")
+run_bootcamp_shiny_demo <- getFromNamespace("run_bootcamp_shiny_demo", "bootcamp")
 
 compute_mean_confidence_interval <- getFromNamespace("compute_mean_confidence_interval", "bootcamp")
 compute_proportion_confidence_interval <- getFromNamespace("compute_proportion_confidence_interval", "bootcamp")
@@ -51,6 +52,30 @@ expect_true(grepl("all x values are equal", flat_fit$slope_label))
 
 expect_true(inherits(build_demo_OLS_app(), "shiny.appobj"))
 expect_true(inherits(build_demo_confidence_app(), "shiny.appobj"))
+
+captured_demo_run <- NULL
+demo_run_result <- run_bootcamp_shiny_demo(
+  app_builder = build_demo_OLS_app,
+  launch.browser = FALSE,
+  runner = function(app, launch.browser) {
+    captured_demo_run <<- list(
+      app = app,
+      launch.browser = launch.browser
+    )
+    "demo-started"
+  }
+)
+expect_equal(demo_run_result, "demo-started")
+expect_true(inherits(captured_demo_run$app, "shiny.appobj"))
+expect_equal(captured_demo_run$launch.browser, FALSE)
+expect_error(
+  run_bootcamp_shiny_demo(
+    app_builder = "not a function",
+    launch.browser = TRUE,
+    runner = function(app, launch.browser) NULL
+  ),
+  pattern = "app_builder"
+)
 
 mean_sample_small <- c(1, 2, 3, 4, 5)
 mean_ci_small <- compute_mean_confidence_interval(mean_sample_small, conf_level = 0.95)
