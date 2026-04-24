@@ -22,6 +22,13 @@
 #' @examples
 #' \dontrun{
 #' bootcamp::demo_prediction_interval()
+#' 
+#' # This alternative can be convenient when you want the app to stay inside
+#' # the current R session instead of opening a browser window automatically.
+#' bootcamp::demo_prediction_interval(launch.browser = FALSE)
+#'
+#' # During class you can contrast this demo with the OLS demo:
+#' bootcamp::demo_OLS()
 #' }
 demo_prediction_interval <- function(launch.browser = TRUE) {
   if (!base::requireNamespace("shiny", quietly = TRUE)) {

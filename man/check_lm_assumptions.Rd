@@ -41,6 +41,10 @@ checking. It does not try to be a comprehensive diagnostics package. Instead,
 it gathers a small set of familiar checks into one table so students can link
 patterns in diagnostic plots to concrete indicators.
 
+The function is especially useful alongside \code{bootcamp::demo_residuals()},
+because students can first see the visual pattern in the demo and then see
+how a simple rule-based summary flags similar issues in a fitted model.
+
 The function currently reports on:
 \itemize{
   \item possible non-linearity, based on the gain from adding a quadratic
@@ -61,4 +65,15 @@ y <- 3 + 1.5 * x + stats::rnorm(120, sd = 0.7)
 fit <- stats::lm(y ~ x)
 
 bootcamp::check_lm_assumptions(fit)
+
+curved_y <- 3 + 1.5 * x + 1.2 * x^2 + stats::rnorm(120, sd = 0.7)
+curved_fit <- stats::lm(curved_y ~ x)
+bootcamp::check_lm_assumptions(curved_fit, print = FALSE)
+
+hetero_y <- 3 + 1.5 * x + stats::rnorm(120, sd = 0.3 + abs(x))
+hetero_fit <- stats::lm(hetero_y ~ x)
+bootcamp::check_lm_assumptions(
+  hetero_fit,
+  heteroscedasticity_threshold = 0.20
+)
 }

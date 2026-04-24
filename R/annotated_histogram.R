@@ -39,6 +39,23 @@
 #' x <- stats::rnorm(200, mean = 10, sd = 2)
 #' bootcamp::annotated_histogram(x)
 #' bootcamp::annotated_histogram(x, show_sd = TRUE, show_rug = TRUE)
+#'
+#' skewed_x <- stats::rexp(250, rate = 0.4)
+#' bootcamp::annotated_histogram(
+#'   skewed_x,
+#'   breaks = 20,
+#'   col = "#F3D9B1",
+#'   main = "Right-skewed distribution"
+#' )
+#'
+#' values_with_missing <- c(stats::rnorm(120, mean = 5), NA, NA)
+#' bootcamp::annotated_histogram(
+#'   values_with_missing,
+#'   na.rm = TRUE,
+#'   show_mean = TRUE,
+#'   show_median = TRUE,
+#'   show_sd = TRUE
+#' )
 annotated_histogram <- function(x,
                                 breaks = "Sturges",
                                 na.rm = TRUE,

@@ -29,6 +29,10 @@ ordinary least squares output. It keeps the original numerical results from
 \code{stats::lm()} but adds short plain-language interpretations for the
 coefficients and the overall model fit.
 
+It is intended as a bridge between raw regression output and classroom
+interpretation. Students can inspect the returned tables directly or compare
+them with the standard summary output from \code{summary(model)}.
+
 The returned object is a simple list with two data frames:
 \itemize{
   \item \code{model_summary}: overall fit quantities such as \eqn{R^2} and
@@ -45,4 +49,14 @@ fit <- stats::lm(y ~ x + z)
 
 explanation <- bootcamp::explain_lm(fit, print = FALSE)
 explanation$coefficient_summary
+
+simple_fit <- stats::lm(y ~ x)
+bootcamp::explain_lm(simple_fit)
+
+explanation_with_ci <- bootcamp::explain_lm(
+  fit,
+  confidence_level = 0.90,
+  print = FALSE
+)
+explanation_with_ci$model_summary
 }

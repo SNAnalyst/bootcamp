@@ -87,4 +87,23 @@ y <- 2 + 0.8 * x + stats::rnorm(120, sd = 0.6)
 
 bootcamp::annotated_scatterplot(x, y)
 bootcamp::annotated_scatterplot(x, y, highlight_n = 2L)
+
+labels <- paste0("Case_", seq_along(x))
+bootcamp::annotated_scatterplot(
+  x,
+  y,
+  point_labels = labels,
+  add_correlation = TRUE,
+  add_lm = TRUE,
+  highlight_n = 3L
+)
+
+nonlinear_y <- x^2 + stats::rnorm(120, sd = 0.7)
+bootcamp::annotated_scatterplot(
+  x,
+  nonlinear_y,
+  add_lm = FALSE,
+  correlation_method = "spearman",
+  main = "Association without an OLS line"
+)
 }

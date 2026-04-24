@@ -78,4 +78,21 @@ grouped_values <- list(
   Group_B = stats::rnorm(80, mean = 1)
 )
 bootcamp::annotated_boxplot(grouped_values, horizontal = FALSE)
+
+matrix_values <- cbind(
+  Before = stats::rnorm(60, mean = 10, sd = 2),
+  After = stats::rnorm(60, mean = 11.5, sd = 2.2)
+)
+bootcamp::annotated_boxplot(
+  matrix_values,
+  horizontal = TRUE,
+  show_points = TRUE,
+  show_mean = TRUE
+)
+
+values_with_missing <- list(
+  Group_A = c(stats::rnorm(40), NA, NA),
+  Group_B = c(stats::rnorm(40, mean = 0.5), NA)
+)
+bootcamp::annotated_boxplot(values_with_missing, na.rm = TRUE)
 }
