@@ -44,13 +44,13 @@ whether RStudio or R have at least the version asked for (havig a higher version
 }
 \section{Functions}{
 \itemize{
-\item \code{check_rstudio_equal()}: 
+\item \code{check_rstudio_equal()}: Check whether RStudio has exactly the requested version.
 
-\item \code{check_r_equal()}: 
+\item \code{check_r_equal()}: Check whether R has exactly the requested version.
 
-\item \code{check_rstudio_equal_or_larger()}: 
+\item \code{check_rstudio_equal_or_larger()}: Check whether RStudio has at least the requested version.
 
-\item \code{check_r_equal_or_larger()}: 
+\item \code{check_r_equal_or_larger()}: Check whether R has at least the requested version.
 
 }}
 \keyword{internal}

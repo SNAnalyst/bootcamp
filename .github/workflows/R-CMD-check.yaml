@@ -1,0 +1,73 @@
+# Runs R CMD check plus an "Audit exports" step that guards against forgotten
+# exports -- the class of bug that let bootcamp::correlate() and its
+# print.bootcamp_correlate() method ship unexported (correlate.R was added but
+# NAMESPACE was never regenerated, so roxygen never wrote the export lines).
+# Nothing caught it automatically because there was no CI at all.
+#
+# Adapted from https://github.com/r-lib/actions/tree/v2/examples and from the
+# snafun package's workflow, which added the same audit after snafun::plot()
+# silently lost its export for three months.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+name: R-CMD-check
+
+permissions: read-all
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,  r: 'release'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: macos-latest,   r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      # Resolves Imports/Suggests, including the Remotes entry for gradethis.
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      # Guard against forgotten exports. The audit parses R/*.R against NAMESPACE,
+      # so it must run on the source tree, not the installed package -- which is
+      # why it is a workflow step rather than a test. Run once, on the
+      # ubuntu-release job, reusing the dependencies installed above so the
+      # roxygen drift check can load the package. Exits non-zero on a hard
+      # problem, failing the job.
+      - name: Audit exports
+        if: runner.os == 'Linux' && matrix.config.r == 'release'
+        run: |
+          Rscript -e 'if (!requireNamespace("roxygen2", quietly = TRUE)) install.packages("roxygen2")'
+          Rscript tools/audit-exports.R
+        shell: bash

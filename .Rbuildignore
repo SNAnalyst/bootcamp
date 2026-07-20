@@ -1,7 +1,10 @@
-^\\.git$
-^\\.gitignore$
-^\\.Rhistory$
-^R/\\.Rhistory$
-^data/\\.Rhistory$
-^inst/tutorials/.*/\\.Rhistory$
-^\\.\\.?Rcheck$
+^\.git$
+^\.gitignore$
+^\.Rhistory$
+^R/\.Rhistory$
+^data/\.Rhistory$
+^inst/tutorials/.*/\.Rhistory$
+^.*\.Rcheck$
+^tools$
+^\.github$
+^\.claude$

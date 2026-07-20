@@ -9,13 +9,10 @@ NULL
 
 
 
-#' bootcamp
+#' bootcamp: Statistics Bootcamp
 #'
-#' Package supporting the bootcamp course
+#' Package supporting the bootcamp course. Functions, datasets, and tutorials,
+#' useful for the bootcamp course.
 #'
-#' Functions, datasets, and tutorials, useful for the bootcamp course.
-#'
-#' @name bootcamp
-#' @keywords package
-#' @docType package
-NULL
+#' @keywords internal
+"_PACKAGE"

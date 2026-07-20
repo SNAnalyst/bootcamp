@@ -201,7 +201,7 @@ check_packages <- function (reqs) {
 NULL
 
 
-#' @describeIn  version_check
+#' @describeIn version_check Check whether RStudio has exactly the requested version.
 #' @export
 check_rstudio_equal <- function(version = "2023.6.1", verdict = TRUE) {
   ver <- rstudioapi::versionInfo()$version
@@ -221,7 +221,7 @@ check_rstudio_equal <- function(version = "2023.6.1", verdict = TRUE) {
 }
 
 
-#' @describeIn  version_check
+#' @describeIn version_check Check whether R has exactly the requested version.
 #' @export
 check_r_equal <- function(version = "4.3.1", verdict = TRUE) {
   major_r <- R.Version()$major
@@ -240,7 +240,7 @@ check_r_equal <- function(version = "4.3.1", verdict = TRUE) {
 
 
 
-#' @describeIn  version_check
+#' @describeIn version_check Check whether RStudio has at least the requested version.
 #' @export
 check_rstudio_equal_or_larger <- function(version = "2023.6.1.524", verdict = TRUE) {
   ver <- rstudioapi::versionInfo()$version
@@ -254,7 +254,7 @@ check_rstudio_equal_or_larger <- function(version = "2023.6.1.524", verdict = TR
 }
 
 
-#' @describeIn  version_check
+#' @describeIn version_check Check whether R has at least the requested version.
 #' @export
 check_r_equal_or_larger <- function(version = "4.3.1", verdict = TRUE) {
   major_r <- R.Version()$major

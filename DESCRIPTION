@@ -19,7 +19,6 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/SNAnalyst/bootcamp
 BugReports: https://github.com/SNAnalyst/bootcamp/issues
-RoxygenNote: 7.3.3
 Imports:
     DescTools,
     glue,
@@ -45,3 +44,4 @@ Suggests:
 	tinytest,
 	usethis
 License: AGPL (>= 3) + file LICENSE
+Config/roxygen2/version: 8.0.0
