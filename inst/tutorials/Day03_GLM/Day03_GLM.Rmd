@@ -805,17 +805,15 @@ An increase of 1 in the predictor increases the log odds by $\beta$ (log odds), 
 
 In our case: 
 
-An increase of 1 in the Data Science Skills increases the log odds by 0.54 (log odds), and it makes the odds of getting a data science job 1.8 times larger than not getting the job. 
+An increase of 1 in the Data Science Skills variable increases the log odds of getting a data science job by 0.54. Equivalently, it increases the odds of getting a data science job by a factor of 1.72.
 
+When we have a categorical variable, it does not make sense to talk about an increment of 1 in the predictor, because it represents categories rather than a continuous scale.
 
-When we have a categorical variable, it does not make sense to talk about an increment of 1 in the predictor, right? It's a category! How can it be incremented? 
+Hence, we comment on this result in another way:
 
-Hence we comment on this result in another way:
-Being in the group with high anxiety decreases (since the sign is minus) the log odds by -2.54, making the odds of getting a job in data science 0.78 times smaller than for the people with low anxiety (the reference category).
+Being in the high anxiety group decreases the log odds of getting a data science job by 2.54 compared with the low anxiety group (the reference category). This means that the odds of getting a data science job are 0.08 times those of people with low anxiety.
 
-
-It makes sense that data science skills predict the success of getting a data science job, right? 
-It also makes sense that people that are not anxious perform better than anxious people when they go for job interviews. Right? 
+It makes sense that Data Science Skills predict the likelihood of getting a data science job. It is also reasonable that people with low anxiety have higher odds of getting a data science job than people with high anxiety, as they may perform better during job interviews.
 
 Well, our hypothesis was looking for evidence of some effects and not asking how strong the effect is. Am I right? 
 
