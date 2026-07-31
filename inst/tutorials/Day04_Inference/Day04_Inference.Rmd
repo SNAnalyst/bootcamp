@@ -1,6 +1,6 @@
 ---
-title: "Day 04 -- Prediction VS Inference"
-description: "Tools to understand Data Science"
+title: "Day 04 -- Experimental Method and Causality"
+description: "How data scientists test theory"
 output: 
   learnr::tutorial:
     fig_caption: no
@@ -105,7 +105,7 @@ You made it to the fourth and final tutorial! Kudos! It's not an easy journey, a
 
 In this tutorial, we will learn how to deal with experimental data and play with the difference between causality and prediction.
 
-Keep climbing the mountain, and you will be rock solid ready for the exam!
+Keep climbing the mountain, and you will be rock-solid ready for the exam!
 
 <br>
 <br>
@@ -120,7 +120,7 @@ make sure you have all of the required packages installed.
 
 ### R Version 
 
-You need to have installed a recent R version and this tutorial is going to check it
+You need to have installed a recent R version, and this tutorial is going to check it
 for you. Please hit the `Run Code` button.
 
 ```{r r_check, echo = TRUE, include = TRUE, exercise = TRUE}
@@ -130,7 +130,7 @@ check_R()
 
 ### R Studio Version
 
-You also need to have installed a recent RStudio version.
+You also need to have a recent RStudio version installed.
 Let's check by clicking `Run Code`:
 
 ```{r rstudio_check, echo = TRUE, include = TRUE, exercise = TRUE}
@@ -141,7 +141,7 @@ check_RStudio()
 ### Packages
 
 You need to have a few packages installed. 
-Click the `Run Code` to check. 
+Click the `Run Code` button to check. 
 It will check whether you have the required packages installed and will 
 attempt to install any missing packages in case there are any.
 
@@ -160,13 +160,38 @@ ok, we are ready! let's dance!
 
 ## Shall we take Marketing classes?
 
-Companies that carry out any business need to implement good marketing strategies to propose their products in the most appealing way to their customers. Some people believe that marketing skills are natural to some 'natural born sellers'; others believe that everyone can learn how to be good at marketing. 
+Companies that conduct business need to implement effective marketing strategies to present their products in the most appealing way to their customers. Some people believe that marketing skills are innate in some 'natural born sellers'; others believe that everyone can learn to be good at marketing. 
 
 If you are a school that teaches business people marketing strategies, you definitely belong to the second group :)
 
-Let's consider a fictitious school named 'The Good School of Marketing' (GSM). GSM wants to measure the effective impact of its master course 'Best marketing strategies for contemporary business'. They are scientists and believe in the experimental method. Hence they collect data about the 2000 companies with the highest revenue in the country and check whether their CEO attended or not their classes. 
+Let's consider a fictitious school named 'The Good School of Marketing' (GSM). GSM wants to measure the effective impact of its master's course 'Best marketing strategies for contemporary business'. They are scientists and believe in the experimental method. Hence, they collect data on the 2000 companies with the highest revenue in the country and check whether their CEOs attended their classes. 
 
-Please note that when we talk about the experimental method, we have a large array of options. Usually, we call an experiment something taking place in a controlled environment, such as a lab, where we can control all the conditions in the room. For instance, we can give some drugs to a rat and see whether the drug helps the rat to get to the end of a maze, given the same temperature, humidity rate, and food. However, even if a so-called lab experiment is the most famous type of experiment, it is not the only one. For instance, we have field experiments. Field experiments take place outside of a lab and observe the effect of a treatment (of any kind) on a group compared to a control group that did not take the treatment. 
+Experimental methods are not limited to controlled laboratory settings. A laboratory experiment allows researchers to control the environment and assign treatments under highly controlled conditions. For example, a researcher may give a drug to a group of rats and measure its effect on their ability to complete a maze while keeping temperature, humidity, and food conditions constant.
+
+However, experiments can also take place in real-world settings. These are called **field experiments**. A field experiment evaluates the effect of a treatment outside the laboratory by comparing a group that receives the treatment (treatment group) with a group that does not (control group).
+
+The GSM marketing case is a field experiment scenario because the treatment occurs in a real-world environment: some CEOs attended the marketing course, while others did not. The research question is: does the CEO attending the course affect the number of clients acquired by companies?
+
+Because we are comparing the outcome of two independent groups:
+
+- treatment group: CEOs who attended the GSM course
+- control group: CEOs who did not attend the GSM course
+
+the appropriate statistical approach is an **independent two-sample t-test**. This test compares the average number of clients between the two groups to assess whether the observed difference is larger than what could be expected by random variation.
+
+This differs from the Guinness brewing experiment. In the Guinness case, the researcher can randomly assign batches to different brewing processes, creating comparable groups under controlled conditions. This is a randomized experiment, where the treatment assignment is determined by the researcher.
+
+In contrast, in the GSM example, CEOs are not randomly assigned to attend the course. They choose (or are selected) into the treatment group, meaning that differences between groups may exist before the treatment. Therefore, the comparison requires careful consideration of group comparability and possible control variables to separate the effect of the treatment from other factors that may influence company success.
+
+### In short 
+
+- Randomized experiment (Guinness): The researcher assigns the treatment, creating comparable groups and allowing stronger causal conclusions.
+
+ - Field experiment (GSM): The treatment occurs in a real-world setting and outcomes are compared between treated and untreated groups; causal interpretation depends on the comparability of the groups.
+ 
+There are many techniques invented to make the groups more comparable, but we are not going to discuss them here.
+
+For now, focus on the fact that the same statistical methods are valid both for randomized and field experiments. 
 
 
 Let's look at their data and see what we have here. 
@@ -188,7 +213,7 @@ summary(marketing)
 ```
 
 
-We have five variables
+We have five variables.
 
 - `marketing_class`: did the CEO take the marketing class? YES (1), NO (0)
 - `N_clients`: number of clients, used as a proxy for marketing strategy success
@@ -198,16 +223,16 @@ We have five variables
 
 
 
-When a company is successful, it has a more extensive network of customers that benefit from its services/products. It is straightforward that if no one wants to use its services/product, the company will eventually fail. The network of relationships a company is embedded in is crucial for its survival and well-being. Do marketing strategies help the company attract clients? The literature on the subject and empirical evidence widely support this idea. Then, in this case, our research question is: Does the master offered by the GSM master help the companies in increasing the number of clients? Given our knowledge about GSM (let's pretend ^_^), we believe so. This belief is our research hypothesis. Let's write it down. 
+When a company is successful, it has a broader network of customers who benefit from its products and services. It is straightforward that if no one wants to use its services/product, the company will eventually fail. The network of relationships in which a company is embedded is crucial to its survival and well-being. Do marketing strategies help the company attract clients? The literature on the subject and empirical evidence widely support this idea. Then, in this case, our research question is: Does the GSM master's degree help increase the number of clients? Given our knowledge about GSM (let's pretend ^_^), we believe so. This belief is our research hypothesis. Let's write it down. 
 
-H1: The master offered by GSM affects the number of clients
+H1: The master's degree offered by GSM affects the number of clients
 
-H0: The master offered by GSM does not affect the number of clients
+H0: The master's offered by GSM does not affect the number of clients
 
 
-Taking the master's is our treatment. We compare the treatment group to a control group that did not take the master's. From this perspective, this is a field experiment since we are monitoring the effect of treatment outside of a lab. We cannot control every condition as much as in a lab. Still, we collect data on some control variables of relevance (in this case `Online`, `N_employees`, `MaleCEO`) so that we can make sure that what we observe in the experiment is really due to the treatment instead of other conditions that happen by chance. 
+Taking the master's is our treatment. We compare the treatment group to a control group that did not take the master's. From this perspective, this is a field experiment because we are monitoring the effect of the treatment outside a lab. We cannot control every condition as much as in a lab. Still, we collect data on some relevant control variables (in this case `Online`, `N_employees`, `MaleCEO`) to ensure that what we observe in the experiment is attributable to the treatment rather than to other conditions that occur by chance. 
 
-In this perspective, our outcome variable is `N_clients` since we want to observe whether `marketing_class` can explain its variation. 
+From this perspective, our outcome variable is `N_clients`, as we want to assess whether `marketing_class` explains its variation. 
 
 In regression terms, we have `N_clients ~ marketing_class`
 
@@ -226,7 +251,7 @@ H0: $\mu_1 = \mu_0$
 
 In fact, if the null hypothesis is correct and the treatment has no effect, the mean of the two groups will be equal.
 
-It does make sense. Right? 
+It does make sense. Do you agree? 
 
 
 
@@ -242,7 +267,12 @@ H1: $\mu_1 > \mu_0$
 H0: $\mu_1 = \mu_0$
 
 
-Before we run any kind of statistical test to look for evidence supporting our hypothesis, we should always look at the data. 
+This hypothesis is one tailed. 
+
+In regression terms, we model the relationship as `N_clients ~ marketing_class`, where marketing_class is used to explain variation in the number of clients. When we focus on comparing means, we interpret `marketing_class` as defining two groups: companies whose CEOs attended the GSM course (`marketing_class = 1`) and companies whose CEOs did not (`marketing_class = 0`). The analysis then compares the average number of clients between these two groups to estimate the difference associated with the treatment.
+
+
+Before we run any kind of statistical test to look for evidence to disprove our hypothesis, we should always look at the data. 
 
 Run the code below to produce a boxplot that shows the difference in mean for the N of clients divided into the treatment and control groups.
 
@@ -257,7 +287,7 @@ boxplot(N_clients ~ marketing_class,
 ```
 
 
-Nice! with this boxplot, we can easily see that the average number of clients is much higher for those companies whose CEOs attended the master's! Can you see it? The 1 denotes the boxplot about the treated group, while the 0 is below the boxplot with the control. 
+Nice! With this boxplot, we can easily see that the average number of clients is much higher for companies whose CEOs attended the master's program! Can you see it? The 1 denotes the boxplot about the treated group, while the 0 is below the boxplot with the control. 
 
 Is this enough to support our hypothesis? I am afraid it is not. In statistics, we talk about statistical significance, right? Is our result random, or does a specific process generate it? AKA, will we get the same result if we repeat the experiment 1000 times? 
 
@@ -266,7 +296,7 @@ Well, let's use a statistical test to check the significance of our result!
 
 ## Statistically significant 
 
-One of the most common tools to check whether the difference in mean between two groups is statistically significant is the t-test. 
+One of the most common tools to check whether the difference in mean between two groups is statistically significant is the t-test. In this case we need an independent two sample t-test, since we have two groups to compare. 
 
 The t-test works with the assumption that both treatment and control groups are sampled from normal distributions with equal variances. Does it ring any bell? Isn't it similar to the linear regression assumption? Well, we will discuss this later...
 
@@ -285,25 +315,44 @@ H1test <- stats::t.test(marketing$N_clients ~ marketing$marketing_class,
                         alternative = "two.sided")
 
 H1test
+
+
 ```
 
 It worked! 
 
+If you pay attention, however, you will see that this is different from the t-test we used in the lecture slides. Let's use the same approach as we did there
 
-The way we specified the test checks the two-sided option. 
+```{r t-test_b, echo=TRUE, exercise = TRUE, exercise.setup = "tut04_prepMarketing"}
 
-What can we say about the result? We have a p-value smaller than 2.2e-16. Therefore, the probability that the difference in mean we observe between the treatment and the control group is random is very, very small. So small that we can reject the null hypothesis h0. 
+treatment <- marketing$N_clients[marketing$marketing_class == 1]
 
-The output also provides the confidence interval. We can read a confidence interval alternatively than a p-value. 
+control <- marketing$N_clients[marketing$marketing_class == 0]
+
+# Independent two-sample t-test
+H1test_b <- stats::t.test(treatment,
+                          control,
+                          alternative = "two.sided")
+
+H1test_b
+```
+
+In the second option, we had to recode the data to extract the entries in the variable `N_clients` corresponding to either the treatment or the control group. The results are equivalent, and you can choose either one according to convenience.  
+
+Both ways we specified the test check the two-sided option. 
+
+What can we say about the result? We have a p-value smaller than 2.2e-16. Therefore, the probability that the observed difference in mean between the treatment and control groups is random is very, very small. So small that we can reject the null hypothesis h0. 
+
+The output also provides the confidence interval. We can read a confidence interval instead of a p-value. 
 We have -269.1029 and -229.7591. These two scores are both negative. A confidence interval shows a significant result when both scores are either both positive or both negative. If they have a different sign, they are considered not significant. 
 
 The output also provides us with the estimated mean for each group. These numbers match the two tick lines we observed in the boxplot.
 
-Ok, we have tested the two-sided hypothesis. Still, the University believes that its graduates have a higher number of clients! Shall we test that? 
+Ok, we have tested the two-sided hypothesis. However, this was not our hypothesis! The University believes that its graduates have a higher number of clients, not a different one (higher or lower)! Now we need to test the hypothesis for real.
 
 Can you do it for me? Pretty, pretty please :)
 
-I will help you. Use the code provided above and substitute "two.sided" with "less". It checks whether the control group's mean is significantly smaller than the treated one.
+I will help you. Use the code provided above and substitute "two.sided" with "greater". It checks whether the treatment group's mean is higher than that of the control group and whether this is statistically significant.
 
 
 ```{r testgreater, echo=TRUE, exercise = TRUE, exercise.setup = "tut04_prepMarketing"}
@@ -316,8 +365,10 @@ I will help you. Use the code provided above and substitute "two.sided" with "le
 
 ```{r testgreater-solution}
 
-H1test <- stats::t.test(marketing$N_clients ~ marketing$marketing_class, 
-                        alternative = "less")
+H1test <- H1test_b <- stats::t.test(treatment,
+                          control,
+                          alternative = "greater")
+
 
 H1test
 
@@ -331,9 +382,9 @@ gradethis::grade_code(correct = "Great job!")
 ```
 
 
-Yes! It is significant! Our treatment group has a statistically significant effect in increasing the number of clients! Lovely!
+Yes! It is significant! Our treatment group has a statistically significant effect in increasing the number of clients! Lovely! Of course, if you invert the order of the variables in the test you need to specify "less" rather than greater. Also, if you use the regression specification, you need to set your reference category before running the model. 
 
-Why don't you try to check on the possibility that the mean of the treated group is higher than the mean of the control group? Same as above, but you need to specify the option "greater". Give it a go!
+Why don't you try to check on the possibility that the mean of the treated group is lower than the mean of the control group? Same as above, but you need to specify the option "greater". Give it a go!
 
 
 
@@ -347,8 +398,9 @@ Why don't you try to check on the possibility that the mean of the treated group
 
 ```{r testless-solution}
 
-H1test <- stats::t.test(marketing$N_clients ~ marketing$marketing_class, 
-                        alternative = "greater")
+H1test <- H1test_b <- stats::t.test(treatment,
+                          control,
+                          alternative = "less")
 
 H1test
 
@@ -362,7 +414,7 @@ gradethis::grade_code(correct = "Sweet!")
 ```
 
 
-The p-value this time is very high! Hence, we can claim that the Marketing master's is not having a negative effect on companies! Good!
+The p-value this time is very high! Hence, we can claim that the Marketing master's is not having a bad effect on companies reducing their number of clients! Good! - carefull though, this claim is valid only for this sample. We cannot claim that this is true in general. 
 
 
 
@@ -374,20 +426,34 @@ Let's take a look at this image.
 ![](images/t-test_two_tails_05.png)
 
 
-In this image, we see the distribution of the difference between the mean of the treatment and control group of the same experiment we are running in real life, reproduced via simulation. Each of the points forming the bell curve is an experiment. For our real experiment result to be significant, it must be either in the red area on the right or left. This is what the two-tailed test is looking for. It is less likely to be in one of these two small areas instead of the large space at the center; that's why the p-value needs to be small. The unlikely needs to happen. If our experiment resembles all the random others, it does not have much value. It is not interesting; it is not significant. :)
+The figure shows the sampling distribution of the difference between the treatment and control group means under the assumption that the null hypothesis is true. Each point in the distribution represents the result of a hypothetical experiment repeated under the same conditions.
 
-If we specify 'greater' in the test, we are only looking at the plot's red area on the left-hand side. Likewise, if we specify 'less', we only look at the right one. 
+Most simulated experiments produce differences close to zero, because if the treatment has no effect, random variation should create only small differences between groups. The center of the distribution therefore represents outcomes that are most compatible with the null hypothesis.
+
+Our real experiment is statistically significant when the observed difference falls in the extreme tails of the distribution. In a two-tailed test, we consider both directions: a result can be significant if it is unusually large or unusually small compared with what we would expect under the null hypothesis of no effects.
+
+These tail areas represent rare outcomes under $H_0$. The p-value is the probability of observing a result at least as extreme as the one obtained, assuming that the null hypothesis is true. A small p-value means that our observed result would be unlikely to occur by chance alone.
+
+If we specify `alternative = "greater"` in the test, we focus only on the upper tail, because we are testing whether the treatment group has a larger mean than the control group.
+
+If we specify `alternative = "less"`, we focus only on the lower tail, because we are testing whether the treatment group has a smaller mean than the control group.
 
 
-## Linear Regression
+## ATE with a Linear Regression
 
-As we already learned in the previous classes this week, the linear regression model also analyses how a variable can predict the variation of an outcome, given that the outcome is numeric and follows a normal distribution. Linear regression also checks the differences between groups of respondents on average. The reasoning behind the t-test and the linear regression are mathematically similar. We can test our experimental hypothesis with the `lm()` function you already know. 
+The t-test allows us to evaluate whether we can reject the null hypothesis and conclude that there is a statistically significant difference between the treatment and control groups. A boxplot can help us visualize this difference in means. However, neither the t-test nor the boxplot tells us the magnitude of the effect: how much does attending the master's degree increase the number of clients?
 
-Shall we try? 
+As we learned earlier, linear regression also examines how a variable explains variation in a numeric outcome. In this context, regression allows us to compare groups on average, just like a t-test, but it goes one step further by estimating the size of the effect. In other words, it tells us the expected change in the outcome associated with the treatment.
 
-First of all, we need to make sure that the variables have the right dress for the occasion. 
+The logic behind the independent two-sample t-test and linear regression is mathematically equivalent when we have a binary treatment variable. Both methods compare the average outcome between two groups. The advantage of regression is that it provides a direct estimate of the treatment effect and can be extended to include additional control variables.
 
-`marketing_class` needs to be re-coded as a factor since it is a dummy one denoting the state of having taken or not the master class. 
+Therefore, we can test our experimental hypothesis using the `lm()` function that you already know.
+
+Shall we try?
+
+First, we need to make sure that our variables have the correct "dress" for the occasion.
+
+`marketing_class` is a dummy variable indicating whether the CEO attended the master's course or not. Since it represents two categories rather than a continuous measurement, we should recode it as a factor before estimating the model.
 
 Then, we can run the model.
 
@@ -402,14 +468,36 @@ H1lm <- stats::lm(N_clients ~ marketing_class,
 summary(H1lm)
 ```
 
+The p-value reported by the regression is smaller than 2.2e-16. This is consistent with the result obtained from the independent two-sample t-test, providing strong evidence against the null hypothesis.
 
-The p-value is smaller than 2.2e-16. This is exactly the same result we got with the t-test! Waw! Since it is significant, we can move on to reading the estimate. According to the model, those CEOs who took the master's are 249.431 more likely than those who did not to have an increment in the number of clients! This is a fantastic result for the GSM School!
+Since the effect is statistically significant, we can move on to interpreting the estimated coefficient. The coefficient of `marketing_class` represents the average difference in the number of clients between CEOs who attended the master's course and those who did not.
 
-If we use an OLS we cannot specify if the test needs to be one tailed or two tailed. However, we can interpret the sign of the coefficient. If the sign is positive, the treatment increases the effect on the outcome variable. If the sign is negative, it decreases. Since the sign is positive, we observe exactly the same result as the t-test, and we can come to the same conclusion. 
+According to the model, companies whose CEOs attended the master's course have, on average, 249.431 more clients than companies whose CEOs did not attend the course.
 
-Now we are happy and satisfied, right? No! Wait, we have more information! Are we absolutely sure that the higher average number of clients in the treatment group has to be attributed to the treatment? Well, no. We cannot possibly know. 
+However, this result should not immediately be interpreted as a causal effect. The positive coefficient indicates that the treatment group has a higher average number of clients, but we still need to consider whether other characteristics differ between the two groups and could explain this difference.
 
-Since we have control variables, we should include them in the model to ensure that they are not the real reason for which we observe this difference in mean. 
+When using OLS, the default hypothesis test for each coefficient is two-tailed:
+
+
+$$H_0: \beta_1 = 0$$
+
+
+$$H_A: \beta_1 \neq 0$$
+
+
+If our theoretical hypothesis is directional, for example:
+
+$$H_0: \beta_1 \leq 0$$
+
+$$H_A: \beta_1 > 0$$
+
+we can use the sign of the coefficient together with the statistical evidence to evaluate whether the treatment has a positive effect. A positive coefficient indicates an increase in the outcome, while a negative coefficient indicates a decrease.
+
+The regression confirms the same pattern observed in the t-test: CEOs who attended the master's course are associated with a higher number of clients.
+
+However, are we sure that this difference is caused by the master's course? Not necessarily. Companies whose CEOs attended the course may differ from those whose CEOs did not attend in other important ways.
+
+For this reason, we should include relevant control variables in the regression model. By controlling for factors such as company type, company size, and CEO characteristics, we can reduce the possibility that the observed difference is driven by other characteristics rather than by the treatment itself.
 
 Can you do it for me? 
 
@@ -452,31 +540,49 @@ gradethis::grade_code(correct = "You are on fire!")
 ```
 
 
-Here we are! None of the control variables is significant! So now we can truly claim that the marketing class in the master's is super good and increases the number of clients! 
+Here we are! After including the control variables, we observe that none of them has a statistically significant coefficient in the model. This means that, given the data and the model specification, we do not find strong evidence that these variables explain additional variation in the number of clients.
+
+However, this does not mean that we can automatically claim that the marketing class caused the increase in clients. Statistical significance of the control variables is not the criterion for establishing causality. The important question is whether the treatment and control groups are comparable and whether the included controls account for relevant differences between them.
+
+The positive and significant coefficient of `marketing_class` suggests that companies whose CEOs attended the master's course have a higher average number of clients, even after accounting for the available control variables. This provides stronger evidence for a potential treatment effect, but causal conclusions still depend on the quality of the research design and the assumption that important confounding factors have been addressed.
+
+This example also highlights an important distinction between laboratory and field experiments.
+
+Laboratory experiments usually provide stronger control over the conditions of the study. Researchers can assign the treatment, keep other conditions constant, and minimize the influence of external factors. Because of this control, it is easier to attribute differences in outcomes directly to the treatment. This makes laboratory experiments particularly powerful for identifying causal relationships.
+
+Field experiments take place in real-world environments, where many factors cannot be controlled. This gives them higher external validity because they study effects in realistic settings, but it also makes causal interpretation more challenging. In real life, treatment and control groups may differ in many ways that are not observed by the researcher. These unmeasured factors may influence the outcome and create a difference between groups that is not caused by the treatment itself.
+
+Therefore, when we observe a relationship between a treatment and an outcome in a field setting, we need to ask whether this relationship reflects a true causal effect or whether it is partly explained by other factors that we have not measured.
+
+The challenge of causal inference is precisely to distinguish between:
+
+
+- Observed difference in outcomes
+
+
+and
+
+
+- Difference in outcomes caused by the treatment
+
+Randomized experiments achieve this by making treatment and control groups comparable by design. Observational field studies, instead, require additional methods such as regression controls, matching, or other causal inference techniques to reduce the influence of confounding factors.
+
 
 
 ## Predicting the Future
 
-What we have done so far in this tutorial would be called by most of us statistics. Right? Would you call it data science? Well, I don't know what you are thinking right now, but I am pretty sure that you would call data science a predictive model that uses linear regressions. 
+Let's return to the simplest version of our model, where we use `N_clients` as the outcome variable and `marketing_class` as the predictor.
 
-Right?
+So far, we used this model to estimate the average difference between companies whose CEOs attended the master's course and those whose CEOs did not. In other words, we interpreted the coefficient of `marketing_class` as an estimate of the treatment effect.
 
+Now, we change perspective. Instead of asking whether the master's course causes an increase in clients, we ask a predictive question:
 
-Well, when we enter the world of predictive models, we think of machine learning, neural networks, artificial intelligence, and so on. Is it that far? 
+> Given the pattern learned from our data, what number of clients would the model predict for a new company?
 
-When causal inferences approaches look at the reasons why we observe something (are the companies having more clients because their CEOs took the master's?), predictive approaches aim at classifying the future behavior into patterns we already know. I know that a large number of people behave this way (training data set); what are other people expected to do (test data set)? 
+Our original `marketing` dataset is our **training dataset**: the data used to estimate the relationship between `marketing_class` and `N_clients`.
 
-These are two sides of the same coin. 
+We now create a small **test dataset** containing new observations for which we want predictions. Since our model uses only `marketing_class` as a predictor, the new dataset only needs to contain this variable.
 
-When we use linear regressions to make a prediction, we assume that new actions can be classified according to the pattern we already explained. After you establish the causes, you can predict 'the future'! Aka, you can see how a new observation lies in the old pattern. 
-
-Let's move on with our example and assume that our `marketing` data set is our training data set, and now the university wants to predict the behavior of prospective students. 
-
-Let's start most simply. Let's return to the first linear model where we only consider our outcome variable `N_clients` and predictor `marketing_class`.  
-
-Let's prepare a toy test data set with two entries for marketing_class only. 
-
-`p` is storing a data frame with two entries. Entry one does not take the master; entry two does. 
 
 ```{r linear_regPred, echo=TRUE, exercise = TRUE, exercise.setup = "linear_reg"}
 
@@ -487,15 +593,41 @@ p
 predict(H1lm, newdata = p)
 ```
 
-We can already tell one perspective student that according to our model, their number of clients will be around 508 if they don't take the master, and around 757 if they do. 
 
-Can we see that these numbers are exactly the mean of the control and the treatment group? 
+The object p contains two hypothetical new companies:
 
-ahhh, how fun is math? ^_^
+- Entry 1: `marketing_class = 0` → the CEO did not attend the master's course.
+- Entry 2: `marketing_class = 1` → the CEO attended the master's course.
 
-Ok, this model is very basic. So let's make use of all the other info we have by creating a more informative test data set. 
+We can now use the model trained on the original data to predict their expected number of clients:
 
-The `p` data frame now contains three entries with complete information on our four variables. The three entries are offline companies, and they all have around 50 employees. Hence we want to see whether being a man and taking the master's or not makes a difference. 
+```{r linear_regPredb, echo=TRUE, exercise = TRUE, exercise.setup = "linear_regPred"}
+
+predict(H1lm, newdata = p)
+```
+
+The `predict()` function applies the relationship learned by the regression model to new observations. The output represents the model's expected value of N_clients for each hypothetical company.
+
+Notice that the same regression model can therefore be interpreted in two different ways:
+
+- Causal inference: the coefficient of marketing_class estimates the average difference associated with the treatment, under causal assumptions.
+- Prediction: the model uses the observed pattern between marketing_class and N_clients to generate expected outcomes for new cases.
+
+We can now use our model to make predictions for prospective companies. According to the model, a company whose CEO did not attend the master's course is predicted to have around 508 clients, while a company whose CEO attended the master's course is predicted to have around 757 clients.
+
+Can we recognize these values? They correspond exactly to the average number of clients observed in the control and treatment groups.
+
+Ahhh, how fun is mathematics? ^_^
+
+This happens because our model contains only one binary predictor: `marketing_class`. With a dummy variable, the regression model simply estimates the average outcome for each group. The intercept represents the mean outcome for the reference group (`marketing_class = 0`), while the coefficient of `marketing_class` represents the difference between the treatment and control group means.
+
+However, this is a very simple model. In reality, companies differ in many ways, and we have additional information that may help us make more accurate predictions.
+
+Let's now use all the information available by creating a more informative test dataset.
+
+The new `p` data frame contains three hypothetical companies with values for all four variables included in our model. All three companies are offline businesses with approximately 50 employees. The only difference between them is whether the CEO attended the master's course and whether the CEO is male or female.
+
+We can therefore use the model to explore how these characteristics influence the predicted number of clients. 
 
 
 ```{r lm1, echo=FALSE, exercise = FALSE, exercise.setup = "tut04_prepMarketing" }
@@ -526,14 +658,21 @@ predict(H1lm1, newdata = p)
 ```
 
 
-Given the results, we can say that being a woman CEO does not affect the chances of increasing the number of clients. In fact, the third entry is a woman, and keeping all the conditions constant, she has about 7 clients more than her male CEO colleague that also took the master (entry one).
+Looking at the predictions, we can compare companies with the same characteristics and observe how the model changes its expected number of clients.
 
+According to the model, being a woman CEO is not associated with a meaningful difference in the predicted number of clients. In fact, the third entry represents a female CEO, and keeping the other characteristics constant, the model predicts around 7 more clients compared with the male CEO in the first entry, who also attended the master's course.
 
-Needless to say, you can estimate these scores manually, as we learned in the lab during Day3. 
+However, this difference should be interpreted carefully. In a predictive model, these values represent differences in predicted outcomes based on the patterns learned from the data. They do not automatically imply that CEO gender causes an increase or decrease in the number of clients.
 
-Machine learning, Neural Networks, AI, etc., have more sophisticated ways to make predictions, but they ultimately use the same mindset we just discussed here. Statistical models also get much more complex than this linear regression we used here. 
+Needless to say, these predictions can also be calculated manually using the regression equation, as we practiced during the Day 3 lab.
 
-It makes no sense to discuss whether causal inference is more or less data science than prediction as much as it makes no sense to discuss whether fish and chips are less of food than a pizza. 
+More advanced approaches, such as machine learning algorithms, neural networks, and artificial intelligence models, use more sophisticated techniques to identify patterns and generate predictions. However, the underlying logic remains the same: learn relationships from existing data and use them to make predictions for new observations.
+
+At the same time, statistical models can become much more complex than the simple linear regression model used here. The distinction between causal inference and prediction is therefore not a distinction between "simple statistics" and "real data science."
+
+Both are important ways of learning from data. Asking whether causal inference is more or less data science than prediction is like asking whether fish and chips are less of a food than pizza: they are different approaches serving different purposes, but both belong to the same broader field of understanding data.
+
+## Homeplay 
 
 
 ## Conclusion
