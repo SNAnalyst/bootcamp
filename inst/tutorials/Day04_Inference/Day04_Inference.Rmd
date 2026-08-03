@@ -674,6 +674,199 @@ Both are important ways of learning from data. Asking whether causal inference i
 
 ## Homeplay 
 
+Diabetes type II is one of the most common chronic diseases worldwide. People affected by diabetes often have elevated hemoglobin (HbA1c) levels, which provide an indication of their average blood sugar over the past few months. While a healthy individual typically has a value around 5%, diabetic patients can have substantially higher levels.
+
+A pharmaceutical company has developed a promising new diabetes medication. Before investing millions of dollars in large-scale production, it wants to evaluate whether the new drug performs better than the current standard treatment.
+
+Sixteen volunteers diagnosed with diabetes participate in a pilot clinical trial. Half receive the standard treatment, while the other half receive the new medication. Hemoglobin is measured before the treatment begins and again after the treatment period.
+
+In this dataset you have information on the 16 participants:
+
+-  `treatment` = treatment assigned (Standard, New)
+-  `pre` = hemoglobin level before treatment
+-  `post` = hemoglobin level after treatment
+-  `age` = participant's age
+- `sex` = participant's sex
+
+We are interested in answering 2 research questions: 
+
+- 1) Which treatment performs better?
+- 2) Does a treatment improve patients `HbA1c` over time?
+
+```{r tut04_homeplay, echo= FALSE, include = FALSE}
+
+diabetes <- data.frame(
+  id = 1:30,
+  treatment = c(rep("Standard", 15), rep("New", 15)),
+  pre = c(
+    8.2, 7.8, 8.5, 9.1, 7.9,
+    8.7, 8.3, 9.0, 7.6, 8.4,
+    8.8, 7.7, 8.6, 9.2, 8.1,
+    8.4, 8.9, 8.1, 9.3, 8.5,
+    8.0, 8.7, 9.1, 8.3, 8.6,
+    9.0, 8.2, 8.8, 7.9, 8.5
+  ),
+  post = c(
+    7.9, 7.5, 8.2, 8.7, 7.6,
+    8.3, 8.0, 8.6, 7.4, 8.1,
+    8.4, 7.5, 8.2, 8.8, 7.8,
+    7.4, 7.8, 7.1, 8.0, 7.5,
+    7.2, 7.7, 7.9, 7.3, 7.6,
+    7.8, 7.1, 7.5, 7.0, 7.4
+  ),
+  age = c(
+    54, 62, 47, 59, 51,
+    66, 45, 58, 53, 61,
+    49, 57, 64, 55, 60,
+    52, 68, 46, 63, 50,
+    56, 59, 48, 65, 54,
+    62, 47, 58, 51, 60
+  ),
+  sex = c(
+    "F", "M", "M", "F", "F",
+    "M", "F", "M", "F", "M",
+    "M", "F", "F", "M", "M",
+    "F", "M", "F", "M", "F",
+    "F", "M", "M", "F", "M",
+    "F", "M", "F", "M", "F"
+  )
+)
+
+diabetes
+
+```
+
+### Questions for you to answer
+
+- a) What are the two hypotheses you are testing to answer the research questions?
+(Remember that hypotheses are attempted answers to be verified)
+
+- b) Which type of t-test do you need for testing each hypothesis
+
+- c) Would these two t-test be one or two tailed?
+
+- d) Can you inspect the difference between the `HbA1c` level in the two groups?
+
+
+```{r, boxplotHomeplay, echo=TRUE, exercise = TRUE, exercise.setup = "tut04_homeplay"}
+
+
+
+```
+
+
+```{r boxplotHomeplay-solution}
+
+boxplot(post ~ treatment,
+        data = diabetes,
+        main = "Hemoglobin levels",
+        xlab = "Groups",
+        ylab = "HbA1c",
+        col = c("lightblue", "lightgreen"))
+
+
+```
+
+```{r boxplotHomeplay-check}
+gradethis::grade_code(correct = "Great job!")
+```
+
+
+e) Please, test the first hypothesis 
+(remember than the new drug is supposed to lower the level of `HbA1c`)
+
+
+```{r type2, echo=TRUE, exercise = TRUE, exercise.setup = "tut04_homeplay"}
+
+
+
+```
+
+
+```{r type2-solution}
+t.test(post ~ treatment,
+       data = diabetes,
+       alternative = "less")
+```
+
+
+```{r type2-check}
+gradethis::grade_code(correct = "Great job!")
+```
+
+
+In order to test the second hypothesis we need to focus only on the people who took the new drug, 
+hence, we subset the full data set only keeping the observation relevant for us
+
+```{r type3data, echo=TRUE, include=TRUE, exercise = TRUE, exercise.setup = "tut04_homeplay"}
+new <- subset(diabetes, treatment == "New")
+```
+
+f) Please, test the second hypothesis 
+(remember than the new drug is supposed to lower the level of `HbA1c`)
+
+```{r type3, echo=TRUE, exercise = TRUE, exercise.setup = "type3data" }
+
+
+
+```
+
+
+
+```{r type3-solution }
+t.test(new$pre,
+       new$post,
+       paired = TRUE,
+       alternative = "greater")
+```
+
+```{r type3-check}
+gradethis::grade_code(correct = "Great job!")
+```
+
+
+g) can you check the average treatment effect and test the first hypothesis at the same time
+(remember to consider the control variables you have)
+
+
+
+
+```{r ate, echo=TRUE, exercise = TRUE, exercise.setup = "tut04_homeplay"}
+
+
+```
+
+```{r ate-solution}
+model_ate <- lm(post ~ treatment + age + sex, data = diabetes)
+
+summary(model_ate)
+
+```
+
+
+```{r ate-check}
+gradethis::grade_code(correct = "Great job!")
+```
+
+h) How can you estimate an ANOVA table from the model estimated with `lm()`?
+
+
+```{r anova, echo=TRUE, exercise = TRUE, exercise.setup = "tut04_homeplay"}
+```
+
+
+```{r anova-solution}
+model_ate <- lm(post ~ treatment + age + sex, data = diabetes)
+anova(model_ate)
+```
+
+
+```{r anova-check}
+gradethis::grade_code(correct = "Great job!")
+```
+
+i) What is the answer to the two RQs? 
+(remember to discuss, rejection of the null, ATE, role played by control variables)
 
 ## Conclusion
 
