@@ -1,7 +1,7 @@
 Package: bootcamp
 Type: Package
 Title: Statistics Bootcamp
-Version: 0.02
+Version: 1.00
 Author: Roger Leenders [aut, cre], Claudia Zucca [aut]
 Authors@R:
 	c(person(given = "Roger",
@@ -13,7 +13,7 @@ Authors@R:
 					role = c("aut"),
 					email = "SNA4DS@jads.nl"))
 Maintainer: Roger Leenders <r.t.a.j.leenders@jads.nl>
-Description: Contains the tutorials for the JADS course "Stats Bootcamp" . 
+Description: Contains the tutorials for the JADS course "Stats Bootcamp". 
 Depends: R (>= 4.1.0)
 Encoding: UTF-8
 LazyData: true
