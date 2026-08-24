@@ -681,8 +681,8 @@ quiz(
            a significance level of .05.<br>Do we reject our null hypothesis (based 
            on the results above) or not?",
     answer("yes", correct = TRUE, message = "Great work! This is a single-sided 
-           hypothesis, so you compare the p-value of 0.07 with a single-sided significance 
-           level of 2*0.05 = 0.10, so we conclude that there is indeed a 
+           hypothesis, so you compare the singe-sided p-value of 0.07/2 = 0.035 with a significance 
+           level of 0.05, so we conclude that there is indeed a 
            statistically significant difference in favor of the UK."),
     answer("no", message = "Check the hypothesis again, what is the null hypothesis 
            in this case? Hint: it is NOT H0: difference between UK and US is zero."),
